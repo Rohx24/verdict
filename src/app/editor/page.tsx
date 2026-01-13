@@ -184,8 +184,7 @@ export default function EditorPage() {
     try {
       const ffmpeg = await getFFmpeg();
       ffmpeg.on("progress", ({ ratio }: { ratio?: number }) => {
-        const r = ratio ?? 0;
-        setProgress(Math.min(100, Math.round(r * 100)));
+        setProgress(Math.min(100, Math.round((ratio || 0) * 100)));
       });
       const { fetchFile } = await import("@ffmpeg/util");
       ffmpeg.writeFile("input.mp4", await fetchFile(videoFile));
