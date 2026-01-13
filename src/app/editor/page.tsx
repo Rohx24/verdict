@@ -183,8 +183,8 @@ export default function EditorPage() {
     setProgress(null);
     try {
       const ffmpeg = await getFFmpeg();
-      ffmpeg.on("progress", ({ ratio }: { ratio?: number }) => {
-        setProgress(Math.min(100, Math.round((ratio || 0) * 100)));
+      ffmpeg.on("progress", ({ progress }) => {
+        setProgress(Math.min(100, Math.round((progress || 0) * 100)));
       });
       const { fetchFile } = await import("@ffmpeg/util");
       ffmpeg.writeFile("input.mp4", await fetchFile(videoFile));
@@ -251,8 +251,8 @@ export default function EditorPage() {
         ]);
       }
 
-      const data = await ffmpeg.readFile("out.mp4");
-      const blob = new Blob([data], { type: "video/mp4" });
+      const data = (await ffmpeg.readFile("out.mp4")) as Uint8Array;
+      const blob = new Blob([data as unknown as BlobPart], { type: "video/mp4" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
